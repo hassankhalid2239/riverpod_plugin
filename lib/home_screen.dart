@@ -5,6 +5,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return  Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.redAccent,
+        foregroundColor: Colors.white,
+        title: const Text('Riverpod Plugin'),
+      ),
+    );
   }
 }
