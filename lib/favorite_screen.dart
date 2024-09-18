@@ -21,10 +21,11 @@ class FavoriteScreen extends ConsumerWidget {
       body: ListView.builder(
         itemCount: data.length,
         itemBuilder: (context, index) {
-          final user = ref.watch(favListProvider);
           return ListTile(
             onTap: () {
-              ref.watch(favListProvider.notifier).addUser(data[index]['name'], data[index]['image']);
+              ref
+                  .watch(favListProvider.notifier)
+                  .addUser(data[index]['name'], data[index]['image']);
             },
             leading: CircleAvatar(
               backgroundImage: NetworkImage(data[index]['image']),
@@ -34,10 +35,9 @@ class FavoriteScreen extends ConsumerWidget {
         },
       ),
       bottomNavigationBar: BottomAppBar(
-        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 8),
-        height: 90,
-        child: Consumer(
-          builder: (context, WidgetRef ref, child) {
+          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 8),
+          height: 90,
+          child: Consumer(builder: (context, WidgetRef ref, child) {
             final user = ref.watch(favListProvider);
             return ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -50,15 +50,16 @@ class FavoriteScreen extends ConsumerWidget {
                       Center(
                         child: CircleAvatar(
                           radius: 25,
-                          backgroundImage:
-                          NetworkImage(user[index]['image']),
+                          backgroundImage: NetworkImage(user[index]['image']),
                         ),
                       ),
                       Align(
                         alignment: Alignment.topRight,
                         child: IconButton(
                           onPressed: () {
-                            ref.read(favListProvider.notifier).deleteUser(index);
+                            ref
+                                .read(favListProvider.notifier)
+                                .deleteUser(index);
                           },
                           icon: const Icon(
                             Icons.clear,
@@ -79,9 +80,7 @@ class FavoriteScreen extends ConsumerWidget {
                 );
               },
             );
-          }
-        )
-      ),
+          })),
     );
   }
 }

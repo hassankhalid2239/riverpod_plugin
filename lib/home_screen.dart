@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_plugin/Providers/theme_provider.dart';
 
 import 'counter_screen.dart';
 import 'favorite_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
@@ -17,56 +19,59 @@ class HomeScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          PopupMenuButton(
-            padding: EdgeInsets.zero,
-            tooltip: 'Light Theme',
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            position: PopupMenuPosition.under,
-            color: Colors.white,
-            icon: const Icon(
-              Icons.more_vert_rounded,
+          Consumer(builder: (context, WidgetRef ref, child) {
+            final theme = ref.watch(themeProvider);
+            return PopupMenuButton(
+              padding: EdgeInsets.zero,
+              tooltip: 'Light Theme',
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              position: PopupMenuPosition.under,
               color: Colors.white,
-            ),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: ThemeMode.light,
-                child: Text(
-                  'Light Theme',
-                  style: TextStyle(
-                    color: true
-                        ? Colors.redAccent
-                        : Colors.black,
+              icon: const Icon(
+                Icons.more_vert_rounded,
+                color: Colors.white,
+              ),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: ThemeMode.light,
+                  child: Text(
+                    'Light Theme',
+                    style: TextStyle(
+                      color: theme == ThemeMode.light
+                          ? Colors.redAccent
+                          : Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              PopupMenuItem(
-                value: ThemeMode.dark,
-                child: Text(
-                  'Dark Theme',
-                  style: TextStyle(
-                    color: false
-                        ? Colors.redAccent
-                        : Colors.black,
+                PopupMenuItem(
+                  value: ThemeMode.dark,
+                  child: Text(
+                    'Dark Theme',
+                    style: TextStyle(
+                      color: theme == ThemeMode.dark
+                          ? Colors.redAccent
+                          : Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              PopupMenuItem(
-                value: ThemeMode.system,
-                child: Text(
-                  'System',
-                  style: TextStyle(
-                    color: false
-                        ? Colors.redAccent
-                        : Colors.black,
+                PopupMenuItem(
+                  value: ThemeMode.system,
+                  child: Text(
+                    'System',
+                    style: TextStyle(
+                      color: theme == ThemeMode.system
+                          ? Colors.redAccent
+                          : Colors.black,
+                    ),
                   ),
                 ),
-              ),
-            ],
-            onSelected: (value) {
-              // themeProvider.setTheme(value);
-            },
-          )
+              ],
+              onSelected: (value) {
+                ref.watch(themeProvider.notifier).setTheme(value);
+              },
+            );
+          })
         ],
       ),
       body: Center(

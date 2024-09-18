@@ -7,7 +7,6 @@ class CounterScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     print('build....');
     return Scaffold(
       appBar: AppBar(
@@ -19,18 +18,16 @@ class CounterScreen extends ConsumerWidget {
         ),
       ),
       body: Center(
-        child: Consumer(
-          builder: (context,WidgetRef ref, child) {
-            final counter = ref.watch(counterProvider);
-            return Text(
-              counter.toString(),
-              // '0',
-              style: const TextStyle(
-                fontSize: 50,
-              ),
-            );
-          }
-        ),
+        child: Consumer(builder: (context, WidgetRef ref, child) {
+          final counter = ref.watch(counterProvider);
+          return Text(
+            counter.toString(),
+            // '0',
+            style: const TextStyle(
+              fontSize: 50,
+            ),
+          );
+        }),
       ),
       floatingActionButton: SizedBox(
         height: 65,
