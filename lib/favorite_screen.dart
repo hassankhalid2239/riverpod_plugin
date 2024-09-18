@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_plugin/Providers/favlist_provider.dart';
 import 'data.dart';
 
-class FavoriteScreen extends StatelessWidget {
+class FavoriteScreen extends ConsumerWidget {
   const FavoriteScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    print('build.....');
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
@@ -18,10 +21,10 @@ class FavoriteScreen extends StatelessWidget {
       body: ListView.builder(
         itemCount: data.length,
         itemBuilder: (context, index) {
+          final user = ref.watch(favListProvider);
           return ListTile(
             onTap: () {
-              // favoriteProvider.addUser(
-              //     data[index]['name'], data[index]['image']);
+              ref.watch(favListProvider.notifier).addUser(data[index]['name'], data[index]['image']);
             },
             leading: CircleAvatar(
               backgroundImage: NetworkImage(data[index]['image']),
@@ -33,48 +36,50 @@ class FavoriteScreen extends StatelessWidget {
       bottomNavigationBar: BottomAppBar(
         padding: const EdgeInsets.only(left: 15, right: 15, bottom: 8),
         height: 90,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: 5,//favoriteProvider.selectedUser.length,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              width: 90,
-              child: Stack(
-                children: [
-                  Center(
-                    child: CircleAvatar(
-                      radius: 25,
-                      backgroundImage:
-                      NetworkImage('https://img.freepik.com/premium-photo/smiling-man-professional-profile-picture_606187-680.jpg?w=826'),
-                      // NetworkImage(value.selectedUser[index]['image']),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: IconButton(
-                      onPressed: () {
-                        // value.deleteUser(index);
-                      },
-                      icon: const Icon(
-                        Icons.clear,
-                        // color: Colors.black,
-                        size: 28,
+        child: Consumer(
+          builder: (context, WidgetRef ref, child) {
+            final user = ref.watch(favListProvider);
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: user.length,
+              itemBuilder: (context, index) {
+                return SizedBox(
+                  width: 90,
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundImage:
+                          NetworkImage(user[index]['image']),
+                        ),
                       ),
-                    ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          onPressed: () {
+                            ref.read(favListProvider.notifier).deleteUser(index);
+                          },
+                          icon: const Icon(
+                            Icons.clear,
+                            size: 28,
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          user[index]['name'],
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Text(
-                      'Name',
-                      // value.selectedUser[index]['name'],
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             );
-          },
+          }
         )
       ),
     );
